@@ -5,24 +5,23 @@ COMMENT=`head -n1 $INPUT_FILE`
 BRANCH_NAME=$(git branch | grep -P "\*" | sed -r "s/\*\s//")
 
 check_message() {
- if [[ ! "$1" =~ $2 ]]; then
-    echo "\tNão é possível fazer esse tipo de commit nessa branch. Apenas com prefixo \033[1m$3"
+  if [[ -z $(echo $1 | grep -Po $2) ]]; then
+    echo -e "\tNão é possível fazer esse tipo de commit nessa branch. Apenas com prefixo \033[1m$3"
     exit 1
   fi
   exit 0
 }
 
-if [[ ! "${BRANCH_NAME}" =~ ^(feature|hotfix|cloud) ]]; then
+if [[ -z $(echo ${BRANCH_NAME} | grep -Po "^(feature|(bug|hot)?fix|cloud)") ]]; then
   echo -e "\tNão é possível commitar nessa branch \033[1m${BRANCH_NAME}"
   exit 1
 fi
 
-
-if   [[ "${BRANCH_NAME}" =~ ^feat ]]; then
+if   [[ -n $(echo ${BRANCH_NAME} | grep -Po "^feat") ]]; then
  check_message "${COMMENT}" "^(feat|doc|test)" "feat, doc e test" 
-elif [[ "${BRANCH_NAME}" =~ ^fix ]]; then
+elif [[ -n $(echo ${BRANCH_NAME} | grep -Po "^(hot|bug)?fix") ]]; then
  check_message "${COMMENT}" "^fix" "fix"
-elif [[ "${BRANCH_NAME}" =~ ^cloud ]]; then
+elif [[ -n $(echo ${BRANCH_NAME} | grep -Po "^cloud") ]]; then
  check_message "${COMMENT}" "^chore" "chore"
 fi
 
