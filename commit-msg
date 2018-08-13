@@ -12,13 +12,13 @@ check_message() {
   exit 0
 }
 
-if [[ -z $(echo ${BRANCH_NAME} | grep -Po "^(feature|(bug|hot)?fix|cloud)") ]]; then
+if [[ -z $(echo ${BRANCH_NAME} | grep -Po "^(feature|(bug|hot)?fix|cloud|refact|test)") ]]; then
   echo -e "\tNão é possível commitar nessa branch \033[1m${BRANCH_NAME}"
   exit 1
 fi
 
-if   [[ -n $(echo ${BRANCH_NAME} | grep -Po "^feat") ]]; then
- check_message "${COMMENT}" "^(feat|doc|test)" "feat, doc e test" 
+if   [[ -n $(echo ${BRANCH_NAME} | grep -Po "^(feat|doc|test|refact)") ]]; then
+ check_message "${COMMENT}" "^(feat|doc|test|refact)" "feat, refact, doc e test" 
 elif [[ -n $(echo ${BRANCH_NAME} | grep -Po "^(hot|bug)?fix") ]]; then
  check_message "${COMMENT}" "^fix" "fix"
 elif [[ -n $(echo ${BRANCH_NAME} | grep -Po "^cloud") ]]; then
